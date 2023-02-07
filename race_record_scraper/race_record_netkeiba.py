@@ -30,16 +30,6 @@ def get_course_info(soup):
     course_info = course_info_element[0].text.replace('\xa0', '')
     return course_info
 
-def separate_course_info(course_info):
-#ハードコーディングになっちゃった
-    road_type = course_info[0]
-    curve_info = course_info[1]
-    course_length = course_info[2:course_info.find('m')]
-    weather = course_info[course_info.find('天候')+5]
-    road_situation = course_info[course_info.rfind(road_type)+6]
-    time = course_info[course_info.find('発走')+5:]
-    return road_type, curve_info, course_length, weather, road_situation, time
-
 def get_race_record_df(id):
     global NETKEIBA_URL
     url = NETKEIBA_URL.format(ID = id)
@@ -48,15 +38,5 @@ def get_race_record_df(id):
     elements = get_elements_around_tabel(soup)
     texts = get_texts_from_elements(elements)
     df = reshape_texts_to_df(texts)
-
-    course_info = get_course_info(soup)
-    road_type, curve_info, course_length, weather, road_situation, time = separate_course_info(course_info)
-
-    df['road_type'] = road_type
-    df['curve_info'] = curve_info
-    df['course_length'] = course_length
-    df['weather'] = weather
-    df['road_situation'] = road_situation
-    df['time'] = time
     df['race_id'] = id
     return df
